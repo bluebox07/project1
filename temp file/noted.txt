@@ -1,0 +1,96 @@
+if(isset($_POST['cat_id'])){
+    $cid = $_POST['cat_id'];
+    // print_r($cid);
+    $selected_product = "SELECT * FROM products WHERE product_cat ='$cid'";
+    $run_query_pro = mysqli_query($con, $selected_product);
+    // print_r($run_query_pro);
+
+    while($row = mysqli_fetch_array($run_query_pro )){
+            $pro_id = $row["product_id"];
+            $pro_cat = $row["product_cat"];
+            $pro_brand = $row["product_brand"];
+            $pro_title = $row["product_title"];
+            $pro_price = $row["product_price"];
+            $pro_image = $row["product_image"];
+            
+            // echo $pro_brand;
+            echo "
+            <div class='card'>
+            <img class='card-img-top' src='$pro_image'>
+                        <div class='card-body'>
+                            <p class='card-text'>$pro_title</p>
+                        </div>
+                        <div class='tab-price'>
+                            <div class='old-price'>฿230</div>
+                            <div class='new-price'>฿$pro_price</div>
+                        </div>
+                        <div class='card-footer'>
+                            <button class='btn btn-primary btn-sm'><i class='fas fa-cart-plus'></i></button>
+                            <button class='btn btn-outline-primary btn-sm'><a href='DetailProduct.php?item_id={$pro_id}';><i class='fas fa-list-ul'></i> รายละเอียด</a></button>
+                        </div>
+                </div>
+            ";
+
+        }
+    
+}
+
+JOIN TABLE 
+SELECT product_id ,product_keywords,product_price,product_stock,product_title,product_image, product_brand, brand_title FROM 
+products INNER JOIN brand ON product_brand = brand_id where product_brand ORDER BY product_id ASC
+
+
+
+
+
+
+
+if (isset($_POST['submit'])) {
+    if (isset($_SESSION["shoping_cart"])) {
+        $item_array_id = array_column($_SESSION["shoping_cart"], "item_id");
+        if (!in_array($_GET['code'], $item_array_id)) {
+            $count = count($_SESSION["shopping_cart"]);
+            $item_array = array(
+                'item_id' => $_GET["code"],
+                'item_name' => $row["product_title"],
+                'item_price' => $row["product_price"],
+                'item_quantity' => $_POST['quantity']
+            );
+            $_SESSION["shoping_cart"][$count] = $item_array;
+        } else {
+            echo "<script>alert('สินค้าถูกเพิ่มเรียบร้อย')</script>";
+            echo "<script>window.location='index.php'</script>";
+        }
+    } else {
+        $item_array = array(
+            'item_id' => $_GET["code"],
+            'item_name' => $row["product_title"],
+            'item_price' => $row["product_price"],
+            'item_quantity' => $_POST['quantity']
+        );
+    }
+}
+
+
+
+
+
+
+
+
+if (isset($_SESSION["number_pay"])) {
+    $number_pay = $_SESSION["number_pay"];
+} else {
+    $_SESSION["number_pay"] = rand(1264654, 99999999);
+}
+
+
+
+$sql = "INSERT INTO payment_store (ref_user_id,ref_cart_id,pay_bill, ref_bank_id, ) VALUES ('$user_id','$numpay', '$paybill', '$idbank')";
+$row = mysqli_query($con,$sql);
+echo $row;
+
+//copy table 
+INSERT INTO order_store (p_id, user_id,qty,price)
+SELECT p_id, user_id,qty,price
+FROM carts WHERE user_id=16;
